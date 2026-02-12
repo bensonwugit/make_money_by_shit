@@ -1,4 +1,4 @@
-# Make Money by Shit - Web Application
+# Make Money by Shit - PoC by Web Application
 
 **Start making money while pooping at work!** 🚽💰 Ever wondered how much you've earned just by sitting on the toilet? This hilarious yet powerful app lets you **track every poop, calculate your exact earnings, and optimize your bathroom breaks for maximum profit**. Because let's face it—your time is money, and so is your poop! 💩💵
 
