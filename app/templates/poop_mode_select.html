@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Mode - Make Money by Shit</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="mode-select-page">
+    {% include 'navbar.html' %}
+    
+    <div class="container">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <h2 class="modal-title">現在是什麼時間？</h2>
+                <p class="modal-subtitle">What mode do you want?</p>
+                
+                <div class="mode-options">
+                    <!-- Salary Thief Mode -->
+                    <a href="{{ url_for('poop.salary_thief') }}" class="mode-option mode-option-primary">
+                        <div class="mode-icon">💼</div>
+                        <div class="mode-name">Salary Thief Mode</div>
+                        <div class="mode-desc">Track time & earn money!</div>
+                    </a>
+                    
+                    <!-- Normal Mode -->
+                    <a href="{{ url_for('poop.normal_mode') }}" class="mode-option mode-option-secondary">
+                        <div class="mode-icon">🏠</div>
+                        <div class="mode-name">Normal Mode</div>
+                        <div class="mode-desc">Just track your health</div>
+                    </a>
+                </div>
+                
+                <a href="{{ url_for('dashboard.index') }}" class="btn btn-secondary btn-block">Back to Dashboard</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

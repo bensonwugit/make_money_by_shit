@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Make Money by Shit</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="dashboard-page" data-dark-mode="{{ user_dark_mode | default(false) | lower }}">
+    {% include 'navbar.html' %}
+    
+    <div class="container dashboard-container">
+        <div class="dashboard-header">
+            <h1>💩 Make Money by Shit</h1>
+            <p>{{ greeting_message }}</p>
+        </div>
+        
+        <!-- Main CTA Button -->
+        <div class="action-section">
+            <a href="{{ url_for('poop.mode_select') }}" class="btn btn-primary btn-large">
+                <span class="btn-icon">💰</span>
+                <span class="btn-text">Make Money</span>
+            </a>
+        </div>
+        
+        <!-- Stats Cards -->
+        <div class="stats-grid">
+            <!-- Last Poop Card -->
+            <div class="stat-card">
+                <div class="stat-icon">⏱️</div>
+                <div class="stat-content">
+                    <div class="stat-label">Last Poop</div>
+                    <div class="stat-value">{{ last_record_time or 'Never' }}</div>
+                </div>
+            </div>
+            
+            <!-- Money Earned Card -->
+            <div class="stat-card">
+                <div class="stat-icon">💵</div>
+                <div class="stat-content">
+                    <div class="stat-label">Money Earned (This Month)</div>
+                    <div class="stat-value">{{ user_currency }} {{ "%.2f"|format(monthly_earnings) }}</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Quick Action Cards -->
+        <div class="quick-cards">
+            <a href="{{ url_for('analysis.analysis_dashboard') }}" class="quick-card">
+                <div class="card-icon">📊</div>
+                <div class="card-title">Poop Analysis</div>
+            </a>
+            <a href="{{ url_for('dashboard.index') }}" class="quick-card">
+                <div class="card-icon">📋</div>
+                <div class="card-title">Poop Records</div>
+            </a>
+        </div>
+        
+        <!-- Additional Info -->
+        <div class="info-section">
+            <div class="info-box">
+                <h3>📈 This Month Statistics</h3>
+                <div class="stat-row">
+                    <span>Total Records:</span>
+                    <strong>{{ total_records }}</strong>
+                </div>
+                <div class="stat-row">
+                    <span>Salary Per Minute:</span>
+                    <strong>{{ user_currency }} {{ "%.4f"|format(salary_per_minute) }}</strong>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    {% include 'footer.html' %}
+    
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - Make Money by Shit</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="settings-page">
+    {% include 'navbar.html' %}
+    
+    <div class="container settings-container">
+        <div class="settings-header">
+            <h1>⚙️ Settings</h1>
+        </div>
+        
+        <form id="settings-form" class="settings-form">
+            <!-- Language & Region -->
+            <div class="settings-section">
+                <h3>🌍 Language & Region</h3>
+                
+                <div class="form-group">
+                    <label for="language">Language</label>
+                    <select id="language" name="language">
+                        <option value="en" {% if user.language == 'en' %}selected{% endif %}>English</option>
+                        <option value="zh" {% if user.language == 'zh' %}selected{% endif %}>中文</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="country">Country</label>
+                    <input type="text" id="country" name="country" value="{{ user.country }}" placeholder="Taiwan">
+                </div>
+            </div>
+            
+            <!-- Salary Settings -->
+            <div class="settings-section">
+                <h3>💰 Salary Settings</h3>
+                
+                <div class="form-group">
+                    <label for="salary_currency">Currency</label>
+                    <select id="salary_currency" name="salary_currency">
+                        <option value="TWD" {% if user.salary_currency == 'TWD' %}selected{% endif %}>TWD (NT$)</option>
+                        <option value="USD" {% if user.salary_currency == 'USD' %}selected{% endif %}>USD ($)</option>
+                        <option value="JPY" {% if user.salary_currency == 'JPY' %}selected{% endif %}>JPY (¥)</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="salary_type">Salary Type</label>
+                    <select id="salary_type" name="salary_type">
+                        <option value="monthly" {% if user.salary_type == 'monthly' %}selected{% endif %}>Monthly</option>
+                        <option value="hourly" {% if user.salary_type == 'hourly' %}selected{% endif %}>Hourly</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="salary_amount">Salary Amount</label>
+                    <input type="number" id="salary_amount" name="salary_amount" value="{{ user.salary_amount }}" step="0.01" min="0">
+                </div>
+                
+                <div class="salary-formula">
+                    <p><strong>📐 Salary Per Minute Formula:</strong></p>
+                    <p>Monthly Salary ÷ (Working Days × 4.33 × Working Hours × 60)</p>
+                </div>
+            </div>
+            
+            <!-- Work Schedule -->
+            <div class="settings-section">
+                <h3>📅 Work Schedule</h3>
+                
+                <div class="form-group">
+                    <label for="working_days">Working Days per Week</label>
+                    <input type="number" id="working_days_per_week" name="working_days_per_week" value="{{ user.working_days_per_week }}" min="1" max="7">
+                </div>
+                
+                <div class="form-group">
+                    <label for="working_hours">Working Hours per Day</label>
+                    <input type="number" id="working_hours_per_day" name="working_hours_per_day" value="{{ user.working_hours_per_day }}" min="1" max="24">
+                </div>
+            </div>
+            
+            <!-- Appearance -->
+            <div class="settings-section">
+                <h3>🎨 Appearance</h3>
+                
+                <div class="form-group checkbox">
+                    <input type="checkbox" id="dark_mode" name="dark_mode" {% if user.dark_mode %}checked{% endif %}>
+                    <label for="dark_mode">Dark Mode</label>
+                </div>
+            </div>
+            
+            <!-- Notifications & Privacy -->
+            <div class="settings-section">
+                <h3>🔔 Notifications & Privacy</h3>
+                
+                <div class="form-group checkbox">
+                    <input type="checkbox" id="poop_reminder_enabled" name="poop_reminder_enabled" {% if user.poop_reminder_enabled %}checked{% endif %}>
+                    <label for="poop_reminder_enabled">Poop Reminder</label>
+                </div>
+                
+                <div class="form-group checkbox">
+                    <input type="checkbox" id="privacy_mode_enabled" name="privacy_mode_enabled" {% if user.privacy_mode_enabled %}checked{% endif %}>
+                    <label for="privacy_mode_enabled">Privacy Mode (Hide money amounts)</label>
+                </div>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="settings-actions">
+                <button type="submit" class="btn btn-primary btn-block">💾 Save Settings</button>
+            </div>
+        </form>
+        
+        <!-- Danger Zone -->
+        <div class="settings-section danger-section">
+            <h3>⚠️ Danger Zone</h3>
+            <a href="{{ url_for('auth.logout') }}" class="btn btn-danger btn-block">Logout</a>
+        </div>
+    </div>
+    
+    <script>
+        document.getElementById('settings-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData);
+            data.dark_mode = document.getElementById('dark_mode').checked;
+            data.poop_reminder_enabled = document.getElementById('poop_reminder_enabled').checked;
+            data.privacy_mode_enabled = document.getElementById('privacy_mode_enabled').checked;
+            
+            try {
+                const response = await fetch('{{ url_for("settings.update_settings") }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                if (result.status === 'success') {
+                    alert('Settings saved successfully!');
+                } else {
+                    alert('Error: ' + result.message);
+                }
+            } catch (error) {
+                alert('Error saving settings');
+                console.error(error);
+            }
+        });
+    </script>
+</body>
+</html>

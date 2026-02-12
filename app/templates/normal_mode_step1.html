@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Normal Mode - Step 1</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="poop-entry-page">
+    {% include 'navbar.html' %}
+    
+    <div class="container">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <h2 class="modal-title">Normal Mode</h2>
+                <p class="modal-subtitle">Step 1: When & How Long?</p>
+                
+                <form id="normal-mode-form" class="poop-form">
+                    <!-- Date & Time -->
+                    <div class="form-group">
+                        <label for="datetime">Date & Time</label>
+                        <input type="datetime-local" id="datetime" name="datetime" required>
+                    </div>
+                    
+                    <!-- Duration -->
+                    <div class="form-group">
+                        <label for="duration">Duration (minutes)</label>
+                        <div class="input-with-unit">
+                            <input type="number" id="duration" name="duration" min="1" max="120" value="5" required>
+                            <span class="unit">min</span>
+                        </div>
+                    </div>
+                    
+                    <button type="button" class="btn btn-primary btn-block" onclick="goToSmellQuestion()">
+                        Next – How does it smell?
+                    </button>
+                </form>
+                
+                <a href="{{ url_for('poop.mode_select') }}" class="btn btn-secondary btn-block">Back</a>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Set default datetime to now
+        document.getElementById('datetime').value = new Date().toISOString().slice(0, 16);
+        
+        function goToSmellQuestion() {
+            const datetime = document.getElementById('datetime').value;
+            const duration = document.getElementById('duration').value;
+            
+            if (!datetime || !duration) {
+                alert('Please fill all fields');
+                return;
+            }
+            
+            sessionStorage.setItem('poop_datetime', datetime);
+            sessionStorage.setItem('poop_duration', duration);
+            sessionStorage.setItem('poop_mode', 'normal');
+            // Redirect to smell question page
+            window.location.href = "{{ url_for('static', filename='html/normal_mode_step2.html') }}";
+        }
+    </script>
+</body>
+</html>

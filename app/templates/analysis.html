@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analysis - Make Money by Shit</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="analysis-page">
+    {% include 'navbar.html' %}
+    
+    <div class="container">
+        <div class="analysis-header">
+            <h1>📊 Poop Analysis</h1>
+            <p>Your digestive health insights</p>
+        </div>
+        
+        {% if records %}
+        <!-- Health Score Card -->
+        <div class="score-card">
+            <div class="score-display">
+                <div class="score-circle">
+                    <span class="score-number">{{ health_score }}</span>
+                    <span class="score-label">/100</span>
+                </div>
+                <div class="score-text">
+                    <h3>Digestive Health Score</h3>
+                    <p>
+                        {% if health_score >= 80 %}
+                            Great! Keep up the good work! 🎉
+                        {% elif health_score >= 60 %}
+                            Good! There's room for improvement 👍
+                        {% else %}
+                            Let's improve your digestive health 💪
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Statistics Grid -->
+        <div class="stats-grid">
+            <div class="stat-box">
+                <div class="stat-title">Average Duration</div>
+                <div class="stat-value">{{ avg_duration }} min</div>
+            </div>
+            
+            <div class="stat-box">
+                <div class="stat-title">Total Time</div>
+                <div class="stat-value">{{ total_time }} min</div>
+            </div>
+            
+            <div class="stat-box">
+                <div class="stat-title">Total Records</div>
+                <div class="stat-value">{{ records | length }}</div>
+            </div>
+        </div>
+        
+        <!-- Smell Distribution -->
+        {% if smell_distribution %}
+        <div class="analysis-section">
+            <h3>💨 Smell Distribution</h3>
+            <div class="distribution-chart">
+                {% for smell, count in smell_distribution.items() %}
+                <div class="distribution-row">
+                    <span class="smell-name">{{ smell.replace('_', ' ').title() }}</span>
+                    <div class="distribution-bar">
+                        <div class="bar-fill" style="width: {{ (count / records | length) * 100 }}%"></div>
+                    </div>
+                    <span class="smell-count">{{ count }}</span>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+        
+        <!-- Recent Records -->
+        <div class="analysis-section">
+            <h3>📋 Recent Records</h3>
+            <div class="records-list">
+                {% for record in (records | reverse | list)[:10] %}
+                <div class="record-item">
+                    <div class="record-time">{{ record.datetime.strftime('%m-%d %H:%M') }}</div>
+                    <div class="record-details">
+                        <span class="record-duration">{{ record.duration_minutes }} min</span>
+                        <span class="record-smell">{{ record.smell_condition.replace('_', ' ').title() }}</span>
+                        {% if record.mode == 'salary_thief' %}
+                        <span class="record-money">+{{ record.user.salary_currency }} {{ "%.2f"|format(record.money_earned) }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        
+        <!-- Export Button -->
+        <div class="export-section">
+            <a href="{{ url_for('analysis.export_data') }}" class="btn btn-secondary">📥 Export Data as JSON</a>
+        </div>
+        
+        {% else %}
+        <div class="no-data">
+            <p>No poop records yet. Start recording to see your analysis!</p>
+            <a href="{{ url_for('poop.mode_select') }}" class="btn btn-primary">Record Your First Poop</a>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>

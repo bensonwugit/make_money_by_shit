@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salary Thief Mode - Complete Form</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="poop-entry-page">
+    {% include 'navbar.html' %}
+    
+    <div class="container">
+        <div class="modal-dialog">
+            <!-- Step 1: Date & Time -->
+            <div id="step1" class="modal-content step-content">
+                <h2 class="modal-title">Salary Thief Mode</h2>
+                <p class="modal-subtitle">Step 1 of 2: When & How Long?</p>
+                
+                <form id="form-step1" class="poop-form">
+                    <!-- Date & Time -->
+                    <div class="form-group">
+                        <label for="datetime">Date & Time</label>
+                        <input type="datetime-local" id="datetime" name="datetime" required>
+                    </div>
+                    
+                    <!-- Duration -->
+                    <div class="form-group">
+                        <label for="duration">Duration (minutes)</label>
+                        <div class="input-with-unit">
+                            <input type="number" id="duration" name="duration" min="1" max="120" value="5" required>
+                            <span class="unit">min</span>
+                        </div>
+                    </div>
+                    
+                    <button type="button" class="btn btn-primary btn-block" onclick="goToStep2()">
+                        Next – How does it smell?
+                    </button>
+                </form>
+                
+                <a href="{{ url_for('poop.mode_select') }}" class="btn btn-secondary btn-block">Back</a>
+            </div>
+            
+            <!-- Step 2: Smell Selection -->
+            <div id="step2" class="modal-content step-content" style="display:none;">
+                <h2 class="modal-title">Salary Thief Mode</h2>
+                <p class="modal-subtitle">Step 2 of 2: How does it smell?</p>
+                
+                <form id="form-step2" class="poop-form">
+                    <div class="smell-options">
+                        <label class="smell-option">
+                            <input type="radio" name="smell" value="fresh_clean" required>
+                            <span class="smell-icon">✨</span>
+                            <span class="smell-label">Fresh & Clean</span>
+                        </label>
+                        
+                        <label class="smell-option">
+                            <input type="radio" name="smell" value="extremely_smelly">
+                            <span class="smell-icon">💨</span>
+                            <span class="smell-label">Extremely Smelly</span>
+                        </label>
+                        
+                        <label class="smell-option">
+                            <input type="radio" name="smell" value="rotten_meaty">
+                            <span class="smell-icon">🥩</span>
+                            <span class="smell-label">Rotten / Meaty</span>
+                        </label>
+                        
+                        <label class="smell-option">
+                            <input type="radio" name="smell" value="sour">
+                            <span class="smell-icon">🍋</span>
+                            <span class="smell-label">Sour</span>
+                        </label>
+                        
+                        <label class="smell-option">
+                            <input type="radio" name="smell" value="chemical">
+                            <span class="smell-icon">🧪</span>
+                            <span class="smell-label">Chemical / Irritating</span>
+                        </label>
+                        
+                        <label class="smell-option">
+                            <input type="radio" name="smell" value="oily">
+                            <span class="smell-icon">🍳</span>
+                            <span class="smell-label">Oily</span>
+                        </label>
+                        
+                        <label class="smell-option">
+                            <input type="radio" name="smell" value="egg_like">
+                            <span class="smell-icon">🥚</span>
+                            <span class="smell-label">Egg-like</span>
+                        </label>
+                        
+                        <label class="smell-option">
+                            <input type="radio" name="smell" value="sweet">
+                            <span class="smell-icon">🍓</span>
+                            <span class="smell-label">Sweet</span>
+                        </label>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary btn-block">
+                        Save & View Result
+                    </button>
+                </form>
+                
+                <button type="button" class="btn btn-secondary btn-block" onclick="goToStep1()">Back</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Set default datetime to now
+        document.getElementById('datetime').value = new Date().toISOString().slice(0, 16);
+        
+        function goToStep2() {
+            const datetime = document.getElementById('datetime').value;
+            const duration = document.getElementById('duration').value;
+            
+            if (!datetime || !duration) {
+                alert('Please fill all fields');
+                return;
+            }
+            
+            document.getElementById('step1').style.display = 'none';
+            document.getElementById('step2').style.display = 'block';
+        }
+        
+        function goToStep1() {
+            document.getElementById('step2').style.display = 'none';
+            document.getElementById('step1').style.display = 'block';
+        }
+        
+        document.getElementById('form-step2').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const datetime = document.getElementById('datetime').value;
+            const duration = document.getElementById('duration').value;
+            const smell = document.querySelector('input[name="smell"]:checked').value;
+            
+            try {
+                const response = await fetch('{{ url_for("poop.salary_thief") }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        datetime: datetime,
+                        duration: duration,
+                        smell: smell
+                    })
+                });
+                
+                const data = await response.json();
+                if (data.status === 'success') {
+                    const resultUrl = `/poop/result/${data.record_id}`;
+                    window.location.href = resultUrl;
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            } catch (error) {
+                alert('Error saving record');
+                console.error(error);
+            }
+        });
+    </script>
+</body>
+</html>

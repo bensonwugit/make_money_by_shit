@@ -1,0 +1,12 @@
+# Docker .gitignore
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+.env
+*.db
+*.sqlite
+venv/
+.DS_Store

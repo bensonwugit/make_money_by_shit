@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smell Evaluation</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="poop-entry-page">
+    {% include 'navbar.html' %}
+    
+    <div class="container">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <h2 class="modal-title">How does it smell?</h2>
+                <p class="modal-subtitle">Step 2: Select the best description</p>
+                
+                <form id="smell-form" class="poop-form">
+                    <div class="smell-options">
+                        <label class="smell-option">
+                            <input type="radio" name="smell" value="fresh_clean" required>
+                            <span class="smell-icon">✨</span>
+                            <span class="smell-label">Fresh & Clean</span>
+                        </label>
+                        
+                        <label class="smell-option">
+                            <input type="radio" name="smell" value="extremely_smelly">
+                            <span class="smell-icon">💨</span>
+                            <span class="smell-label">Extremely Smelly</span>
+                        </label>
+                        
+                        <label class="smell-option">
+                            <input type="radio" name="smell" value="rotten_meaty">
+                            <span class="smell-icon">🥩</span>
+                            <span class="smell-label">Rotten / Meaty</span>
+                        </label>
+                        
+                        <label class="smell-option">
+                            <input type="radio" name="smell" value="sour">
+                            <span class="smell-icon">🍋</span>
+                            <span class="smell-label">Sour</span>
+                        </label>
+                        
+                        <label class="smell-option">
+                            <input type="radio" name="smell" value="chemical">
+                            <span class="smell-icon">🧪</span>
+                            <span class="smell-label">Chemical / Irritating</span>
+                        </label>
+                        
+                        <label class="smell-option">
+                            <input type="radio" name="smell" value="oily">
+                            <span class="smell-icon">🍳</span>
+                            <span class="smell-label">Oily</span>
+                        </label>
+                        
+                        <label class="smell-option">
+                            <input type="radio" name="smell" value="egg_like">
+                            <span class="smell-icon">🥚</span>
+                            <span class="smell-label">Egg-like</span>
+                        </label>
+                        
+                        <label class="smell-option">
+                            <input type="radio" name="smell" value="sweet">
+                            <span class="smell-icon">🍓</span>
+                            <span class="smell-label">Sweet</span>
+                        </label>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary btn-block">
+                        Save & View Result
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        document.getElementById('smell-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const smell = document.querySelector('input[name="smell"]:checked').value;
+            const datetime = sessionStorage.getItem('poop_datetime');
+            const duration = sessionStorage.getItem('poop_duration');
+            
+            try {
+                const response = await fetch('{{ url_for("poop.salary_thief") }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        datetime: datetime,
+                        duration: duration,
+                        smell: smell
+                    })
+                });
+                
+                const data = await response.json();
+                if (data.status === 'success') {
+                    window.location.href = `{{ url_for('poop.result', record_id='RECORD_ID') }}`.replace('RECORD_ID', data.record_id);
+                }
+            } catch (error) {
+                alert('Error saving record');
+                console.error(error);
+            }
+        });
+    </script>
+</body>
+</html>
