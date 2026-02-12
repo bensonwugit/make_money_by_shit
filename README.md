@@ -1,6 +1,6 @@
 # Make Money by Shit - Web Application
 
-**Stop wasting money while pooping at work!** 🚽💰 Ever wondered how much you've earned just by sitting on the toilet during work hours? This hilarious yet powerful app lets you **track every poop, calculate your exact earnings, and optimize your bathroom breaks for maximum profit**. Because let's face it—your time is money, and so is your poop! 💩💵
+**Start making money while pooping at work!** 🚽💰 Ever wondered how much you've earned just by sitting on the toilet? This hilarious yet powerful app lets you **track every poop, calculate your exact earnings, and optimize your bathroom breaks for maximum profit**. Because let's face it—your time is money, and so is your poop! 💩💵
 
 ## Features Overview
 
